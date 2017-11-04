@@ -201,7 +201,8 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
           <input class="w3-input w3-border" id = "pethome" type="text" placeholder="Arriving at">
         </div>
       </div>
-      <p><button id = "dates" class="w3-button w3-dark-grey" onclick ="openLink(event,'dates');compareAddress()">Search and find dates</button></p>
+      <p><button id = "dates" class="w3-button w3-dark-grey" onclick ="openLink(event,'dates');compareAddress();calculateRouteFromAtoB (platform);">Search and find dates</button></p>
+
 
     </div>
 
@@ -215,67 +216,30 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
   <div class="w3-container w3-margin-top">
     <h2>About Us</h2>
     <h4>Welcome to pet bnb, where pet owners from all over the world host homes for animals on vacation. We guarantee luxurious experiences for your pets at affordable prices.  </h4>
-  </div>
-  <div class="w3-row-padding w3-text-white w3-large">
-    <div class="w3-half w3-margin-bottom">
-      <div class="w3-display-container">
-        <img src="/w3images/cinqueterre.jpg" alt="Cinque Terre" style="width:100%">
-        <span class="w3-display-bottomleft w3-padding">Cinque Terre</span>
-      </div>
-    </div>
-    <div class="w3-half">
-      <div class="w3-row-padding" style="margin:0 -16px">
-        <div class="w3-half w3-margin-bottom">
-          <div class="w3-display-container">
-            <img src="/w3images/newyork2.jpg" alt="New York" style="width:100%">
-            <span class="w3-display-bottomleft w3-padding">New York</span>
-          </div>
-        </div>
-        <div class="w3-half w3-margin-bottom">
-          <div class="w3-display-container">
-            <img src="/w3images/sanfran.jpg" alt="San Francisco" style="width:100%">
-            <span class="w3-display-bottomleft w3-padding">San Francisco</span>
-          </div>
-        </div>
-      </div>
-      <div class="w3-row-padding" style="margin:0 -16px">
-        <div class="w3-half w3-margin-bottom">
-          <div class="w3-display-container">
-            <img src="/w3images/pisa.jpg" alt="Pisa" style="width:100%">
-            <span class="w3-display-bottomleft w3-padding">Pisa</span>
-          </div>
-        </div>
-        <div class="w3-half w3-margin-bottom">
-          <div class="w3-display-container">
-            <img src="/w3images/paris.jpg" alt="Paris" style="width:100%">
-            <span class="w3-display-bottomleft w3-padding">Paris</span>
-          </div>
-        </div>
-      </div>
+ 
     </div>
   </div>
 
   <!-- Explore Nature -->
   <div class="w3-container">
-    <h3>Explore Nature</h3>
-    <p>Travel with us and see nature at its finest.</p>
+    
   </div>
   <div class="w3-row-padding">
     <div class="w3-half w3-margin-bottom">
       <img src="/w3images/ocean2.jpg" alt="Norway" style="width:100%">
       <div class="w3-container w3-white">
-        <h3>West Coast, Norway</h3>
-        <p class="w3-opacity">Roundtrip from $79</p>
-        <p>Praesent tincidunt sed tellus ut rutrum sed vitae justo.</p>
+        <h3>Homes for Pets in West Coast, Norway</h3>
+        <p class="w3-opacity">$79</p>
+        <p>Beautiful view and location for dogs and cats</p>
         <button class="w3-button w3-margin-bottom">Buy Tickets</button>
       </div>
     </div>
     <div class="w3-half w3-margin-bottom">
       <img src="/w3images/mountains2.jpg" alt="Austria" style="width:100%">
       <div class="w3-container w3-white">
-        <h3>Mountains, Austria</h3>
-        <p class="w3-opacity">One-way from $39</p>
-        <p>Praesent tincidunt sed tellus ut rutrum sed vitae justo.</p>
+        <h3>Homes for Pets in Mountains, Austria</h3>
+        <p class="w3-opacity">$39</p>
+        <p>Comfortable home for tame rabbits or hamsters</p>
         <button class="w3-button w3-margin-bottom">Buy Tickets</button>
       </div>
     </div>
@@ -372,9 +336,10 @@ function calculateRouteFromAtoB (platform) {
       maneuverattributes: 'direction,action',
       //waypoint0: '52.5160,13.3779', // Location A
      // waypoint1: '52.5206,13.3862'  // Location B
-      waypoint0: '42.2495435,-71.0661612', //Location A
-      waypoint1: '42.3601,-71.0589'  // Location B
-    };
+    // waypoint0: address.results[0].geometry.location.lat().toString() +", "+address.results[0].geometry.location.lng().toString(),
+      //waypoint1: '42.3601,-71.0589'  // Location B
+   //  waypoint1: pethome.results[0].geometry.location.lat().toString() + ", "  + pethome.results[0].geometry.location.lng().toString()
+    }
 
 
   router.calculateRoute(
@@ -385,6 +350,7 @@ function calculateRouteFromAtoB (platform) {
 }
 
 function onSuccess(result) {
+  console.log(result)
   var route = result.response.route[0];
  /*
   * The styling of the route response on the map is entirely under the developer's control.
@@ -602,7 +568,7 @@ Number.prototype.toMMSS = function () {
 }
 
 // Now use the map as required...
-calculateRouteFromAtoB (platform);
+//calculateRouteFromAtoB (platform);
   </script>
 
 </body>

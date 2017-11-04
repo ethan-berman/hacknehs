@@ -162,12 +162,32 @@
   background-position:-1316px;
 </style>
 </head>
-<body>
+<body onload="initialize()">
+
+   <div>
+    <input id="address" type="textbox" value="Boston, MA">
+    
+  
+    <p> <input id="pethome" type="textbox" value="Boston, MA"> <p>
+
+    <input type="button" value="Encode" onclick="compareAddress()">
+    </div>
 
   <div id="map" style="position:absolute; width:49%; height:100%; background:grey" ></div>
   <div id="panel" style="position:absolute; width:49%; left:51%; height:100%; background:inherit" ></div>
 
+<script 
+
+    src="googlemaps.js">
+   
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDOej3Tispa-vTKPqRRqKc3ip29tXaQ39o">
+    </script>
+
   <script  type="text/javascript" charset="UTF-8" >
+
+
     
 function calculateRouteFromAtoB (platform) {
   var router = platform.getRoutingService(),
@@ -178,9 +198,12 @@ function calculateRouteFromAtoB (platform) {
       maneuverattributes: 'direction,action',
       //waypoint0: '52.5160,13.3779', // Location A
      // waypoint1: '52.5206,13.3862'  // Location B
-      waypoint0: '42.2495435,-71.0661612', //Location A
-      waypoint1: '42.3601,-71.0589'  // Location B
+      //waypoint0: '42.2495435,-71.0661612', //Location A
+      waypoint0: 'address.results[0].geometry.location.lat() ,address.results[0].geometry.location.lng()',
+      //waypoint1: '42.3601,-71.0589'  // Location B
+     waypoint1: 'pethome.results[0].geometry.location.lat() ,pethome.results[0].geometry.location.lng()'
     };
+     console.log("waypoint0"+waypoint0)
 
 
   router.calculateRoute(
