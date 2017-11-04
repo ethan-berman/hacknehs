@@ -3,37 +3,15 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/mydb";
-var generic = ['jerk', 'dog', 2];
-var generic2 = ['cool', 'lizard',3];
-var fakeHost = ['ethan', 'lizard', 4];
-var fakeHost2 = ['ryan', 'lizard', 1112];
-var fakeHost3 = ['arthur', 'lizard', 299];
-var fakeHost4 = ['zach', 'lizard', 290];
+var generic = ['jerk',[1,0,0,0,0,0,0,0], 2];
+var generic2 = ['cool',[0,0,0,0,0,0,0,1],3];
+var fakeHost = ['ethan',[0,0,1,0,0,0,0,0], 4];
+var fakeHost2 = ['ryan',[0,0,0,1,0,0,0,], 12];
+var fakeHost3 = ['arthur',[0,0,0,0,0,0,0,1], 300];
+var fakeHost4 = ['zach', [0,0,0,0,0,0,0,1], 2900];
 var fakehosts = [];
 var fakepets = [];
 
-
-var tester = "170 Centre St.";
-//codeAddress(tester);
-
-for(i = 0; i < 40; i++){
-	if(i < 20){
-		fakehosts.push(['test', 'dog', i*10]);
-		//registerHost(fakehosts[i]);
-	}else{
-		fakehosts.push(['john', 'cat', i * 4]);
-		//registerHost(fakehosts[i]);
-	}
-}
-for(i = 0;i < 100; i++){
-	if(i < 50){
-		fakepets.push(['rufus', 'lizard', i*3]);
-		//findHost(fakepets[i]);
-	}else{
-		fakepets.push(['doug', 'cat', i*20]);
-		//findHost(fakepets[i]);
-	}
-}
 mongoClient.connect(url, function(err, db){
 	if (err) throw err;
 	db.createCollection('customers', function(err, res){
@@ -51,7 +29,8 @@ function createEntry(form){
 	mongoClient.connect(url, function(err, db){
 		if (err) throw err;
 		//console.log(form[0]);
-		var entry = { user: form[0], pet: form[1], address: form[2]};
+		//console.log(form);
+		var entry = {user: form[0][0], pet: form[1], address: form[0][4]};
 		db.collection('customers').insertOne(entry, function(err, res){
 			if (err) throw err;
 			console.log('1 customer document inserted');
@@ -83,7 +62,7 @@ function registerHost(form){
 function formatReview(host){
 	mongoClient.connect(url, function(err, db){
 		if(err) throw err;
-			var user = host[0];
+			var user = host[0][0];
 			db.collection('hosts').findOne({user: user}, function(err, result) {
    				if (err) throw err;
    				reviews = result.send(reviews);
@@ -127,14 +106,17 @@ function distance(user, host){
 	const end = Math.abs(host - user);
 	return end;
 }
-
+function arraysEqual(a1,a2) {
+    /* WARNING: arrays must not contain {objects} or behavior may be undefined */
+    return JSON.stringify(a1)==JSON.stringify(a2);
+}
 
 function findHost(form){
 	createEntry(form);
 	mongoClient.connect(url, function(err, db){
 		if (err) throw err;
 		var pet = form[1];
-		var geolocal = form[2];
+		var geolocal = form[0][4];
 		db.collection('hosts').find({}, { _id: false}).toArray(function(err, result){
 			if (err) throw err;
 			//console.log(result);
@@ -142,30 +124,37 @@ function findHost(form){
 			var distances = [];
 			var hosts = [];
 			for(i = 0; i < result.length; i++){
-				console.log(result[i].pets);
-				if(result[i].pets === form[1]){
+				if(arraysEqual(result[i].pets, form[1])){
 					console.log('this owner is compatible with a ' + result[i].pets);
 					//calculate distances and add these to an array here, make a function
 					//distance
 					//console.log(result[i].location);
 					distances.push(distance(geolocal, result[i].location));
 					hosts.push(result[i]);
+					console.log(result[i]);
 					//console.log(distance(geolocal, result[i].location));
 				}
 			}
-			distances.sort(function(a, b){return a - b})
-			console.log(distances);
-			var hostList = [];
-			if(distances.length > 5){
-				for(i = 0; i < 5; i++){
-					
-				}
-			}else{
-				for(i = 0; i < distances.length; i++){
-
+			const unsorted = distances;
+			var garbage = [hosts, unsorted];
+			distances.sort(function(a, b){return a - b});
+			var newfinish = [];
+			for(i = 0; i < garbage; i++){
+				if(garbage[i][0] < distances[0]){
+					hostList[0] = garbage[i][0];
+				}else if(garbage[i][0] < distances[1]){
+					hostList[1] = garbage[i][0];
+				}else if(garbage[i][0] < distances[2]){
+					hostList[2] = garbage[i][0];
+				}else if(garbage[i][0] < distances[3]){
+					hostList[3] = garbage[i][0];
+				}else if(garbage[i][0] < distances[4]){
+					hostList[4] = garbage[i][0];
 				}
 			}
-			
+			console.log(hosts);
+			var hostList = [];
+			return hostList[0];
 			//console.log(result);
 			db.close();
 		});
@@ -183,7 +172,7 @@ for(i = 0;i<fakehosts.length;i++){
 
 //createEntry(generic);
 
-findHost(generic2);
+
 registerHost(fakeHost2);
 registerHost(fakeHost4);
 registerHost(fakeHost3);
@@ -203,13 +192,19 @@ app.get('/style.css', function(req, res){
 
 io.on('connection', function(socket){
 	console.log('a user connected');
-	findHost();
 	socket.on('connection', function(){
 
 	});
 
 	socket.on('pet-request', function(form){
-		var host = findHost(form);
+		
+		//console.log(form);
+		var ints = form[1].map(function(item) {
+    		return parseInt(item, 10);
+		});
+		proper = form;
+		proper[1] = ints;
+		var host = findHost(proper);
 		socket.emit('host-found', host);
 	});
 

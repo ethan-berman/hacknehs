@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+  <title>Socket.IO chat</title>
+  <style>
+  </style>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <form action="" name = "form">
+    Username:<br>
+    <input type="text" name="uname" value="">
+    <br>
+    Password:<br>
+    <input type="text" name="pw" value="">
+    <br><br>
+    
+
+
+<!--<form name = 'frm1' action= "">-->
+    <p>
+      <p> Pet: <P>
+
+        <input id="number" type="number" min="0" value = "0" name = "num"> Dog<br>
+        <input id="number" type="number" min="0" value = "0" name = "num"> Cat<br>
+        <input id="number" type="number" min="0" value = "0" name = "num"> Hamster<br>
+        <input id="number" type="number" min="0" value = "0" name = "num"> Fish<br>
+        <input id="number" type="number" min="0" value = "0" name = "num"> Snake<br>
+        <input id="number" type="number" min="0" value = "0" name = "num"> Bird<br>
+        <input id="number" type="number" min="0" value = "0" name = "num"> Rabbit<br>
+        <input id="number" type="number" min="0" value = "0" name = "num"> Other
+        <br>
+        <!--<input type="submit" name="btn1" id="btn1" value="Submit" onClick = 'printChecked()'/> -->
+
+
+
+
+    <p>
+      <p> Dates: <P>
+        
+          Starting date<input id="startdate" type="date" name = "sdate">
+          <br>
+          Ending date<input id="enddate" type="date" name = "edate">
+
+          <!-- <input type="submit" value="Submit"> -->
+
+          <p>
+            <p> Address: <P>
+              Address Line 1: <input id="adline" type="text" name = "ad1">
+              <br>
+              Address Line 2: <input id="adline" type="text" name = "ad2">
+              <br>
+              City: <input id = "detail" type = "text" name = "ct">
+              <br>
+              State: <input id = "detail" type = "text" name = "st8">
+              <br>
+              Zip Code: <input id = "detail" type = "text" name = "zip">
+              <br>
+              <input type="submit" name="btn1" id="btn1" value="Submit">
+            </form> 
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+$(function () {
+  var socket = io();
+  $('form').submit(function(){
+    var petnum = printChecked();
+    var parameters = ["uname", "pw", "sdate", "edate", "ad1", "ad2", "ct", "st8", "zip"]
+    var info = [];
+    for(var t1 = 0; t1 < parameters.length; t1++){
+      var op = document.getElementsByName(parameters[t1]);
+      for(var bp = 0; bp < op.length;bp++){
+        info.push(op[bp].value);
+      }
+    }
+    var vals2 = [info, petnum]
+    socket.emit('pet-request', vals2);
+
+      socket.on('host-found', function(host){
+          $('body').append('<p> Your Host is: ' + host[0] + ' They live at: ' + host[1] + '<p>');
+          alert(host);
+      });
+    });
+  return false;
+});
+
+function printChecked(){
+  var num = document.getElementsByName("num");
+  var selectedItems=[];
+  var b;
+  for(var i=0; i<num.length; i++){
+    
+      b = num[i].value;
+      selectedItems.push(b);
+  }
+  alert(selectedItems);
+  return selectedItems;
+}
+  </script>
+</body>
+</html>
